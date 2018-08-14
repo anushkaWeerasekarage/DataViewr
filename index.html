@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html>
+  <head>
+  
+      
+
+      <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+      <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+      <script  src="//ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script>
+      
+    
+    function sendValue(j) {
+         
+          //alert(j);
+         //return j;
+          google.script.run.withSuccessHandler(function(value){
+            $("#list").empty();
+            for(var i = 0; i < value.length; i++) {
+             //document.getElementById('list').innerHTML = "<li>"+ value[i] +"</li>";
+               $("#list").append("<li>"+value[i]+"</li>");
+             }
+             
+          }).withFailureHandler(function error(){Console.log("Fail");}).rowValues(j);
+       //for(var k = 0; k < val.length; k++) {
+            //document.getElementById("rowValues").innerHTML = val[k];
+           // alert(val[k]);
+        // }
+       
+      
+    }
+   /*
+   function sendAgeValue(val) {
+   
+       $("#list").empty();
+       $("#myTable").hide();
+       $("#myTable2").show();
+   
+       google.script.run.withSuccessHandler(function(r){
+             $("#list2").empty();
+             var x = 0;
+             for(var i = 0; i < r.length; i++) {
+               
+               x = r[i].match(/\d+/)[0] // "3"
+               //alert(x);
+               var name = r[i].replace( /\d+/g, '');
+   
+               $("#list2").append('<li><a href="javascript:void(0)" onclick="sendValue(' + x + ')">' +name+ '</a></li>');
+             }
+          }).withFailureHandler(function error(){Console.log("Fail");}).ageFilter(val);
+          
+          
+   }
+   */
+   function func() {
+      $("#list").empty();
+      $("#myTable2").hide();
+      $("#myTable").show();
+   }
+   
+   function backFunction() {
+      $("#container2").hide();
+      $("#myTable2").hide();
+      $("#myTable").show();
+      $("#container1").show();
+   }
+   
+   function dateSend() {
+     var z = document.getElementById("fDate").value;
+     var y = document.getElementById("sDate").value;
+     //get the column id minus one, to find the column name from first filter
+     var t = sendColId() - 1;
+     //document.getElementById("test").innerHTML = x;
+       $("#list").empty();
+       $("#list2").empty();
+       $("#myTable").hide();
+       $("#myTable2").show();
+       //alert(t);
+   
+       google.script.run.withSuccessHandler(function(r){
+             $("#list2").empty();
+             var x = 0;
+             for(var i = 0; i < r.length; i++) {
+               
+               //x = r[i].match(/\d+/)[0] // "3"
+               //alert(x);
+               //var name = r[i].replace( /\d+/g, '');
+               
+               
+               var index = r[i].indexOf("*");  // Gets the first index where the star occours
+               var name = r[i].substr(0, index); // Gets the first part
+               var x = r[i].substr(index + 1);
+   
+               $("#list2").append('<li><a href="javascript:void(0)" onclick="sendValue(' + x + ')">' +name+ '</a></li>');
+             }
+          }).withFailureHandler(function error(){Console.log("Fail");}).dateFilter(z, y, t);
+   
+   }
+   
+   function sendColId() {
+     
+     var a = 0;
+     var radios = document.getElementsByName("colHead");
+     for (var i = 0, length = radios.length; i < length; i++)
+      {
+       if (radios[i].checked)
+        {
+          a = radios[i].value;
+          //alert(a);
+          
+          break;
+      }
+      }
+      
+     
+     
+       google.script.run.withSuccessHandler(function(res){
+             //alert(res);
+             $("#container1").hide();
+             $("#container2").show();
+             $("#list3").empty();
+             
+             for(var i = 0; i < res.length; i++) {
+                 var x = i + 2;
+               $("#list3").append('<li><a href="javascript:void(0)" onclick="sendValue(' + x + ')">' +res[i]+ '</a></li>');
+             }
+          })
+          .withFailureHandler(function error(){Console.log("Fail");})
+          .radioFunction(a);
+          
+         return a;
+   
+   }
+
+</script>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <base target="_top">
+    <?!= include('Stylesheet'); ?>
+  </head>
+  <body>
+  <div class="container" id="container1">
+    <div class="row">
+    <div class="col-sm-12">
+     <? var colData = []; ?>
+   <? colData = rowFunction(); ?>
+    
+     <? for(var i = 0; i < colData.length; i++) { ?>
+            <input type="radio" id="colValue" name="colHead" value="<?= (i+1) ?>">
+             <label for="choices" style="color:white; font-size:15px; padding-top:15px;"><?= colData[i] ?> </label><br>
+     <? } ?>
+    <input type="submit" class="subButton" onclick="sendColId()">
+  </div>
+  </div>
+  </div>
+  <div class="container" id="container2">
+
+ <div class="row" style="background:linear-gradient(360deg, rgba(191, 58, 48, .9), rgba(25, 32, 36, .7)); padding-top:25px; padding-left:20px;">
+
+  <!--<div class="dropdown">
+  <button class="dropbtn">Filter By Age</button>
+  <div class="dropdown-content">
+    <a href="javascript:void(0)" onclick="sendAgeValue(<?= 1 ?>)">20-30</a>
+    <a href="javascript:void(0)" onclick="sendAgeValue(<?= 2 ?>)">30-40</a>
+    <a href="javascript:void(0)" onclick="sendAgeValue(<?= 3 ?>)">over 40</a>
+  </div>
+</div>-->
+
+ <div class="col-sm-10">
+   <div class="dateFilter">
+      <label for="filterDate" id="dateIn" onclick="dateSend()">Filter By Date</label>
+      <label class="para" style="color:white; font-size:16px;">From</label>
+      <input type="date" name="date1" class="dateFeild" id="fDate">
+      <label class="para" style="color:white; font-size:16px;">To</label>
+      <input type="date" name="date2" class="dateFeild" id="sDate">
+      
+      <!--<p id="test"></p>-->
+   
+    </div>
+   <!-- <div class="dropDown">-->
+    
+    <? //var d = []; ?>
+    <? //d = rowFunction(); ?>
+     <!--<select>-->
+    <? //for(var i = 0; i < d.length; i++) { ?>
+      
+       <!--<option name="drop" value="<?= //(i+1) ?>"><?= //d[i] ?></option>-->
+      
+    
+    <? //} ?>-->
+      <!--</select>-->
+    <!--</div>-->
+ </div>
+ <div class="col-sm-2">
+  <div class="backButton">
+   <button type="button" onclick="backFunction()">Back</button>
+  </div>
+ 
+ </div>
+ </div>
+ <div class="row" style="background-color:#edeff2;">
+ <div class="col-sm-4">
+ 
+   <? //var data = []; ?>
+   <? //data = radioFunction(); ?> 
+  <input class="form-control" id="myInput" type="text" placeholder="Search..">
+  <div class="table-responsive" id="myTable">
+  <ul type="none" id="list3">
+     <!--<table class="table table no-border table-hover">
+      <tbody>
+      <? //for (var i = 0; i < data.length; i++) { ?>
+   
+        <tr>
+        <td>333 </td>
+          <td><a href="javascript:void(0)" onclick="sendValue(<?= //(i+2) ?>)"><?= //data[i] ?></a></td>
+          <!--<td><button type="button" onclick="sendValue(<?= //(i+2) ?>)"><?= //data[i] ?></button></td>-->
+            <!--</tr>-->
+      <? //} ?>
+      <!--</tbody>
+    </table>-->
+    </ul>
+    </div>
+    
+    <div class="table-responsive" id="myTable2">
+    <button type="button" onclick="func()" id="rmFilBt">Remove Filter</button>
+    <ul id="list2" type="none">
+   
+   </ul>
+    </div>
+    
+    <script>
+    $(document).ready(function(){
+    $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTable li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+
+   $(document).ready(function(){
+    $("#myInput").on("keyup", function() {
+    var value = $(this).val().toLowerCase();
+    $("#myTable2 li").filter(function() {
+      $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
+    });
+  });
+});
+</script>
+  
+    <!--<div class="secondColumn">
+    <? var rowData = []; ?>
+  <? rowData = rowFunction(); ?>
+     <table>
+      <? for (var i = 0; i < rowData.length; i++) { ?>
+        <tr>
+          
+            <td><?= rowData[i] ?></td>
+          
+        </tr>
+      <? } ?>
+    </table>
+    </div>-->
+     </div>
+  <div class="col-sm-8 right">
+   <!--<p id="rowValues">fgjgh</p><br>-->
+   <ul id="list" type="none">
+   
+   </ul>
+   
+  </div>
+ </div>
+ </div>
+  </body>
+</html>
+
+
+
