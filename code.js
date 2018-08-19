@@ -186,7 +186,7 @@ function mergeArray(arr1, arr2) {
   }
 }
  */
-/*
+
 function ageFilter(v) {
   
   var ss = SpreadsheetApp.getActiveSpreadsheet();
@@ -215,8 +215,8 @@ function ageFilter(v) {
    return n;
   
 }
-*/
-/*
+
+
 function findDate() {
   var ss = SpreadsheetApp.getActiveSpreadsheet();
   var dataSheet = ss.getSheets()[0];
@@ -236,7 +236,7 @@ function findDate() {
   return r;
   
 }
-*/
+
 function dateFilter(v1, v2, column) {
   //var col = findDate();
   var ss = SpreadsheetApp.getActiveSpreadsheet();
